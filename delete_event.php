@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
     // Execute the delete query
     if ($stmt->execute()) {
         // Redirect back to events.php with a success message
-        header("Location: events.php?message=Event deleted successfully.");
+        header("Location: event.php?message=Event deleted successfully.");
         exit();
     } else {
         // Handle deletion error

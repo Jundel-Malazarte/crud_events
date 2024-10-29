@@ -1,7 +1,7 @@
 <?php
 include 'db_conn.php'; // Include your database connection
 
-// SQL query to join events, participants, and registration tables
+// Updated SQL query to join events, participants, and registration tables
 $query = "
     SELECT 
         e.eventName,
@@ -14,6 +14,8 @@ $query = "
         participants p ON r.participantID = p.participantID
     JOIN 
         events e ON p.eventCode = e.eventCode
+    ORDER BY 
+        r.regDate DESC
 ";
 
 $result = $conn->query($query);
@@ -28,22 +30,10 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/w3.css">
     <style>
-        body {
-            padding: 20px;
-            background-color: #eceff1;
-        }
-        .table-container {
-            margin-top: 20px;
-        }
-        .action-buttons .btn {
-            margin-right: 5px;
-        }
-
-        .btn, btn-primary {
-            margin-bottom: 10px;
-            margin-top: 10px;
-        }
-
+        body { padding: 20px; background-color: #eceff1; }
+        .table-container { margin-top: 20px; }
+        .action-buttons .btn { margin-right: 5px; }
+        .btn { margin-bottom: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -57,6 +47,8 @@ $result = $conn->query($query);
             </div>
             <div class="form-group col-md-3">
                 <input type="text" class="form-control" name="search_eventCode" placeholder="Search Event Code">
+            </div>
+            <div class="form-group col-md-2">
                 <button type="submit" name="search" class="btn btn-primary w3-button w3-blue">Search</button>
             </div>
         </div>
@@ -74,6 +66,20 @@ $result = $conn->query($query);
             </thead>
             <tbody>
                 <?php
+                // Check if a search has been performed
+                if (isset($_POST['search']) && !empty($_POST['search_eventCode'])) {
+                    $search_eventCode = $_POST['search_eventCode'];
+                    // Modified query to filter by eventCode
+                    $query .= " WHERE e.eventCode = ?";
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param("i", $search_eventCode);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                } else {
+                    $result = $conn->query($query); // Default query without search
+                }
+
+                // Display results
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
@@ -86,7 +92,6 @@ $result = $conn->query($query);
                 } else {
                     echo "<tr><td colspan='4' class='text-center'>No records found.</td></tr>";
                 }
-
                 $conn->close();
                 ?>
             </tbody>
