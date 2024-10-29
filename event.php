@@ -1,7 +1,7 @@
 <?php
 include 'db_conn.php'; // Include your database connection
-// Search function
 
+// Search function
 $query = "SELECT * FROM events";
 $search_conditions = [];
 
@@ -23,6 +23,9 @@ if (isset($_POST['search'])) {
         $query .= " WHERE " . implode(" AND ", $search_conditions);
     }
 }
+
+// Execute the query
+$result = $conn->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -44,10 +47,10 @@ if (isset($_POST['search'])) {
         .action-buttons .btn {
             margin-right: 5px;
         }
-        .btn, btn-primary {
+        .btn {
             margin: 2px;
         }
-        .form-group, col-md-3 {
+        .form-group {
             margin-top: 10px;
         }
     </style>
@@ -57,7 +60,7 @@ if (isset($_POST['search'])) {
     <h2 class="text-center mb-4">Registered Events</h2>
 
     <!-- Form to add or search for an event -->
-    <form action="events.php" method="post" class="mb-4">
+    <form action="event.php" method="post" class="mb-4">
         <div class="form-row">
             <div class="form-group col-md-7 text-right">
                 <a href="index.php" class="btn btn-primary w3-button w3-blue">Back to menu</a>
@@ -67,7 +70,7 @@ if (isset($_POST['search'])) {
             </div>
             <div class="form-group col-md-3">
                 <input type="text" class="form-control" name="search_eventCode" placeholder="Search Event Code">
-                <button type="submit" name="search" class="btn btn-primary w3-button w3-blue"><a href="event.php">Search</a></button>
+                <button type="submit" name="search" class="btn btn-primary w3-button w3-blue">Search</button>
             </div>
         </div>
     </form>
@@ -97,17 +100,6 @@ if (isset($_POST['search'])) {
             </thead>
             <tbody>
                 <?php
-                include 'db_conn.php';
-
-                // Search function
-                $query = "SELECT * FROM events";
-                if (isset($_POST['search'])) {
-                    $search_eventCode = $_POST['search_eventCode'];
-                    $query .= " WHERE eventCode LIKE '%$search_eventCode%'";
-                }
-
-                $result = $conn->query($query);
-
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";

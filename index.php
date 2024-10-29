@@ -59,7 +59,7 @@
                     <ul class="w3-ul">
                         <li><a href="event.php" class="w3-button w3-block w3-blue">View Events</a></li>
                         <li><a href="participants.php" class="w3-button w3-block w3-teal">View Participants</a></li>
-                        <li><a href="#records.php" class="w3-button w3-block w3-green">Registration Records</a></li>    
+                        <li><a href="record.php" class="w3-button w3-block w3-green">Registration Records</a></li>    
                     </ul>
                 </div>
             </form>
